@@ -11,8 +11,15 @@ function App(props) {
 
   // input ref
   const inputRef = useRef();
-  inputRef.current.value = publicKey;
 
+  // state change
+  useEffect(() => {
+    setNfts([]);
+    setShow(false);
+     if (publicKey) {
+       inputRef.current.value = publicKey;
+     }
+  }, [publicKey, connection]);
   const [nfts, setNfts] = useState([]);
 
   //alert props
@@ -23,10 +30,6 @@ function App(props) {
   //loading props
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    setNfts([]);
-    setShow(false);
-  }, [publicKey, connection]);
 
   const getNfts = async (e) => {
     e.preventDefault();
