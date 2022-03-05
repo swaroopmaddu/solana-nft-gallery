@@ -36,3 +36,31 @@
     transform: rotate(360deg);
   }
 }
+
+.main {
+  padding: 20px;
+  margin-bottom: 50px;
+}
+
+.inputForm{
+  padding: 20px;
+}
+
+.imageGrid {
+  margin: 5px;
+  border: 1px solid #ccc;
+  float: left;
+}
+.imageGrid:hover {
+  border: 2px solid #777;
+}
+
+.imageGrid img {
+  width: 100%;
+  height: auto;
+}
+.imageGrid span {
+  display: block;
+  text-align: center;
+  color: #333;
+}
