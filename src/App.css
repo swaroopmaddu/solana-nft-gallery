@@ -64,3 +64,9 @@
   text-align: center;
   color: #333;
 }
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
