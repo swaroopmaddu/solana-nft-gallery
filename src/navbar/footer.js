@@ -26,7 +26,11 @@ const Footer = () => (
     <Col xs="12" md="12" lg="6" className="text-center">
       <div style={{ color: "#fff" }}>
         © 2022 Copyright:{" "}
-        <a href="https://swaroopmaddu.me/" style={{ color: "#fff" }}>
+        <a
+          href="https://swaroopmaddu.github.io/"
+          target={'_blank'}
+          style={{ color: "#fff" }} rel="noreferrer"
+        >
           Swaroop Maddu
         </a>
       </div>
