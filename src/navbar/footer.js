@@ -1,5 +1,5 @@
 import React from "react";
-import { Col, Row, Button, Form, Card } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 
 const Footer = () => (
   <Row
@@ -7,8 +7,8 @@ const Footer = () => (
       position: "fixed",
       bottom: "0",
       padding: "10px",
-      width: "100%",
-      backgroundColor: "#212529",
+      width: "110%",
+      backgroundColor: "#111827",
     }}
   >
     <Col xs="12" md="12" lg="6" className="text-center">
@@ -25,7 +25,7 @@ const Footer = () => (
 
     <Col xs="12" md="12" lg="6" className="text-center">
       <div style={{ color: "#fff" }}>
-        © 2020 Copyright:{" "}
+        © 2022 Copyright:{" "}
         <a href="https://swaroopmaddu.me/" style={{ color: "#fff" }}>
           Swaroop Maddu
         </a>

@@ -37,6 +37,8 @@
   }
 }
 
+
+
 .main {
   padding: 20px;
   margin-bottom: 50px;
@@ -57,7 +59,8 @@
 
 .imageGrid img {
   width: 100%;
-  height: auto;
+  object-fit: cover;
+  height: 300px;
 }
 .imageGrid span {
   display: block;
@@ -69,4 +72,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+
+.wallet-btn {
+  height: 38px;
 }

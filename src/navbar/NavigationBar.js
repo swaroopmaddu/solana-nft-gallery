@@ -25,9 +25,11 @@ const Navigationbar = (props) => {
   }
 
   return (
-    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+    <Navbar collapseOnSelect expand="lg" style={{ backgroundColor: "#111827" }}>
       <Container>
-        <Navbar.Brand href="#home">Solana Gallery</Navbar.Brand>
+        <Navbar.Brand href="#home" style={{ color: "#fff" }}>
+          Solana Gallery
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto"></Nav>
@@ -45,7 +47,7 @@ const Navigationbar = (props) => {
           </Nav>
           <Nav>
             <Nav.Link></Nav.Link>
-            <WalletMultiButton />
+            <WalletMultiButton className="wallet-btn"/>
           </Nav>
         </Navbar.Collapse>
       </Container>

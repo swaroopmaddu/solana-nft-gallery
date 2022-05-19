@@ -2,7 +2,7 @@ import './App.css';
 import { useEffect, useRef, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { getParsedNftAccountsByOwner, isValidSolanaAddress, createConnectionConfig, } from "@nfteyez/sol-rayz";
-import { Col, Row, Button, Form, Card } from "react-bootstrap";
+import { Col, Row, Button, Form, Card, Badge } from "react-bootstrap";
 import AlertDismissible from './alert/alertDismissible';
 
 function App(props) {
@@ -15,13 +15,17 @@ function App(props) {
   // state change
   useEffect(() => {
     setNfts([]);
+    setView("collection");
+    setGroupedNfts([]);
     setShow(false);
      if (publicKey) {
        inputRef.current.value = publicKey;
      }
   }, [publicKey, connection]);
-  const [nfts, setNfts] = useState([]);
 
+  const [nfts, setNfts] = useState([]);
+  const [groupedNfts, setGroupedNfts] = useState([]);
+  const [view, setView] = useState('collection');
   //alert props
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
@@ -59,18 +63,29 @@ function App(props) {
       serialization: true,
     });
 
-    console.log("Got nfts");
 
     if (nftArray.length === 0) {
       setTitle("No NFTs found in " + props.title);
       setMessage("No NFTs found for address: " + address);
       setLoading(false);
+      setView('collection');
       setShow(true);
       return;
     }
 
     const metadatas = await fetchMetadata(nftArray);
-        console.log("Got nfts metadata");
+    var group = {};
+
+    for (const nft of metadatas) {
+      if (group.hasOwnProperty(nft.data.symbol)) {
+        group[nft.data.symbol].push(nft);
+      } else {
+        group[nft.data.symbol] = [nft];
+      }
+    }
+    setGroupedNfts(group);
+    console.log(group);
+  
     setLoading(false);
     return setNfts(metadatas);
   };
@@ -78,11 +93,16 @@ function App(props) {
   const fetchMetadata = async (nftArray) => {
     let metadatas = [];
     for (const nft of nftArray) {
-      await fetch(nft.data.uri)
+      console.log(nft);
+      try {
+        await fetch(nft.data.uri)
         .then((response) => response.json())
-        .then((meta) => {
-          metadatas.push(meta);
+        .then((meta) => { 
+          metadatas.push({...meta, ...nft});
         });
+      } catch (error) {
+        console.log(error);
+      }
     }
     return metadatas;
   };
@@ -108,38 +128,111 @@ function App(props) {
             Get NFTs from {props.title}{" "}
           </Button>
         </Col>
-
-        <Col lg="2"></Col>
+        <Col lg="1"></Col>
+        <Col lg="1">
+          {view === "nft-grid" && (
+            <Button
+              size="md"
+              variant="danger"
+              onClick={() => {
+                setView("collection");
+              }}
+            >
+              Close
+            </Button>
+          )}
+        </Col>
       </Row>
       {loading && (
         <div className="loading">
-          <img
-            src="loading.gif"
-            alt="loading"
-          />
+          <img src="loading.gif" alt="loading" />
         </div>
       )}
+
       <Row>
-        {!loading && nfts.map((metadata, index) => (
-          <Col xs="12" md="12" lg="3">
-            <Card
-              className="imageGrid"
-              lg="3"
-              key={index}
-              style={{ width: "100%" }}
-            >
-              <Card.Img
-                variant="top"
-                src={metadata?.image}
-                alt={metadata?.name}
-              />
-              <Card.Body>
-                <Card.Title>{metadata?.name}</Card.Title>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
+        {!loading &&
+          view === "collection" &&
+          Object.keys(groupedNfts).map(
+            (metadata, index) => (
+              (
+                <Col xs="12" md="6" lg="2" key={index}>
+                  <Card
+                    onClick={() => {
+                      setNfts(groupedNfts[metadata]);
+                      setView("nft-grid");
+                    }}
+                    className="imageGrid"
+                    lg="3"
+                    style={{
+                      width: "100%",
+                      backgroundColor: "#2B3964",
+                      padding: "10px",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    <Card.Img
+                      variant="top"
+                      src={groupedNfts[metadata][0]?.image}
+                      alt={groupedNfts[metadata][0]?.name}
+                      style={{
+                        borderRadius: "10px",
+                      }}
+                    />
+                    <Card.Body>
+                      <span>
+                        <Card.Title style={{ color: "#fff" }}>
+                          {metadata}
+                        </Card.Title>
+                        <Badge
+                          pill
+                          bg={props.variant.toLowerCase()}
+                          text="light"
+                        >
+                          <h6>{groupedNfts[metadata].length}</h6>
+                        </Badge>
+                      </span>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              )
+            )
+          )}
       </Row>
+
+      {
+        <Row>
+          {!loading &&
+            view === "nft-grid" &&
+            nfts.map((metadata, index) => (
+              <Col xs="12" md="6" lg="2" key={index}>
+                <Card
+                  onClick={() => {
+                    console.log(nfts.length);
+                  }}
+                  className="imageGrid"
+                  lg="3"
+                  style={{
+                    width: "100%",
+                    backgroundColor: "#2B3964",
+                    padding: "10px",
+                    borderRadius: "10px",
+                  }}
+                >
+                  <Card.Img
+                    variant="top"
+                    src={metadata?.image}
+                    alt={metadata?.name}
+                  />
+                  <Card.Body>
+                    <Card.Title style={{ color: "#fff" }}>
+                      {metadata?.name}
+                    </Card.Title>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+        </Row>
+      }
 
       {show && (
         <AlertDismissible title={title} message={message} setShow={setShow} />
