@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { getParsedNftAccountsByOwner, isValidSolanaAddress, createConnectionConfig, } from "@nfteyez/sol-rayz";
 import { Col, Row, Button, Form} from "react-bootstrap";
-import AlertDismissible from './alert/alertDismissible';
+import AlertDismissible from './components/alert/alertDismissible';
 import PreLoader from './components/preloader';
 import Collections from './components/collections';
 import GalleryView from './components/galleryview';

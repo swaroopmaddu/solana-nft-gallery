@@ -83,3 +83,11 @@
 .wallet-btn {
   height: 38px;
 }
+
+.navbar-toggler {
+  background-color: #fff;
+}
+
+.navbar-toggler-icon {
+  color: #fff;
+}

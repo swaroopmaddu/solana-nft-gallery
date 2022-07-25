@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import './index.css';
 import App from './App';
-import NavigationBar from "./navbar/NavigationBar";
+import NavigationBar from "./components/navbar/NavigationBar";
 import { ConnectionProvider, WalletProvider, } from "@solana/wallet-adapter-react";
 import {
   LedgerWalletAdapter,
@@ -17,7 +17,7 @@ import {
 } from "@solana/wallet-adapter-react-ui";
 import { clusterApiUrl } from "@solana/web3.js";
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import Footer from './navbar/footer';
+import Footer from './components/navbar/footer';
 
 
 // Default styles that can be overridden by your app
