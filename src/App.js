@@ -34,7 +34,7 @@ function App({connection,variant, cluster}) {
   const [show, setShow] = useState(false);
 
   //loading props
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
 
   const getNfts = async (e) => {
