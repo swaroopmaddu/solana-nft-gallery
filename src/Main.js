@@ -61,7 +61,7 @@ const Main = () => {
                 title={title}
                 setTitle={setTitle}
               />
-              <App connection={endpoint} variant={variant} title={title} />
+              <App connection={endpoint} variant={variant.toLowerCase()} cluster={title} />
               <Footer/>
             </Fragment>
           </WalletModalProvider>

@@ -2,12 +2,14 @@ import './App.css';
 import { useEffect, useRef, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { getParsedNftAccountsByOwner, isValidSolanaAddress, createConnectionConfig, } from "@nfteyez/sol-rayz";
-import { Col, Row, Button, Form, Card, Badge } from "react-bootstrap";
+import { Col, Row, Button, Form} from "react-bootstrap";
 import AlertDismissible from './alert/alertDismissible';
+import PreLoader from './components/preloader';
+import Collections from './components/collections';
+import GalleryView from './components/galleryview';
 
-function App(props) {
+function App({connection,variant, cluster}) {
   const { publicKey } = useWallet();
-  const { connection } = props;
 
   // input ref
   const inputRef = useRef();
@@ -32,7 +34,7 @@ function App(props) {
   const [show, setShow] = useState(false);
 
   //loading props
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
 
   const getNfts = async (e) => {
@@ -65,7 +67,7 @@ function App(props) {
 
 
     if (nftArray.length === 0) {
-      setTitle("No NFTs found in " + props.title);
+      setTitle("No NFTs found in " + title);
       setMessage("No NFTs found for address: " + address);
       setLoading(false);
       setView('collection');
@@ -77,6 +79,7 @@ function App(props) {
     var group = {};
 
     for (const nft of metadatas) {
+      console.log(nft);
       if (group.hasOwnProperty(nft.data.symbol)) {
         group[nft.data.symbol].push(nft);
       } else {
@@ -84,8 +87,6 @@ function App(props) {
       }
     }
     setGroupedNfts(group);
-    console.log(group);
-  
     setLoading(false);
     return setNfts(metadatas);
   };
@@ -108,135 +109,56 @@ function App(props) {
   };
 
   return (
-    <div className="main">
-      <Row className="inputForm">
-        <Col lg="2"></Col>
-        <Col xs="12" md="12" lg="5">
-          <Form.Control
-            type="text"
-            ref={inputRef}
-            placeholder="Wallet address"
-          />
-        </Col>
-        <Col xs="12" md="12" lg="3" className="d-grid">
-          <Button
-            variant={props.variant.toLowerCase()}
-            type="submit"
-            onClick={getNfts}
-          >
-            {" "}
-            Get NFTs from {props.title}{" "}
-          </Button>
-        </Col>
-        <Col lg="1"></Col>
-        <Col lg="1">
-          {view === "nft-grid" && (
-            <Button
-              size="md"
-              variant="danger"
-              onClick={() => {
-                setView("collection");
-              }}
-            >
-              Close
+    <div>
+      <div className="main">
+        <Row className="inputForm">
+          <Col lg="2"></Col>
+          <Col xs="12" md="12" lg="5">
+            <Form.Control
+              type="text"
+              ref={inputRef}
+              placeholder="Wallet address"
+            />
+          </Col>
+          <Col xs="12" md="12" lg="3" className="d-grid">
+            <Button variant={variant} type="submit" onClick={getNfts}>
+              Get NFTs from {cluster}
             </Button>
-          )}
-        </Col>
-      </Row>
-      {loading && (
-        <div className="loading">
-          <img src="loading.gif" alt="loading" />
-        </div>
-      )}
-
-      <Row>
-        {!loading &&
-          view === "collection" &&
-          Object.keys(groupedNfts).map(
-            (metadata, index) => (
-              (
-                <Col xs="12" md="6" lg="2" key={index}>
-                  <Card
-                    onClick={() => {
-                      setNfts(groupedNfts[metadata]);
-                      setView("nft-grid");
-                    }}
-                    className="imageGrid"
-                    lg="3"
-                    style={{
-                      width: "100%",
-                      backgroundColor: "#2B3964",
-                      padding: "10px",
-                      borderRadius: "10px",
-                    }}
-                  >
-                    <Card.Img
-                      variant="top"
-                      src={groupedNfts[metadata][0]?.image}
-                      alt={groupedNfts[metadata][0]?.name}
-                      style={{
-                        borderRadius: "10px",
-                      }}
-                    />
-                    <Card.Body>
-                      <span>
-                        <Card.Title style={{ color: "#fff" }}>
-                          {metadata}
-                        </Card.Title>
-                        <Badge
-                          pill
-                          bg={props.variant.toLowerCase()}
-                          text="light"
-                        >
-                          <h6>{groupedNfts[metadata].length}</h6>
-                        </Badge>
-                      </span>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              )
-            )
-          )}
-      </Row>
-
-      {
-        <Row>
-          {!loading &&
-            view === "nft-grid" &&
-            nfts.map((metadata, index) => (
-              <Col xs="12" md="6" lg="2" key={index}>
-                <Card
-                  onClick={() => {
-                    console.log(nfts.length);
-                  }}
-                  className="imageGrid"
-                  lg="3"
-                  style={{
-                    width: "100%",
-                    backgroundColor: "#2B3964",
-                    padding: "10px",
-                    borderRadius: "10px",
-                  }}
-                >
-                  <Card.Img
-                    variant="top"
-                    src={metadata?.image}
-                    alt={metadata?.name}
-                  />
-                  <Card.Body>
-                    <Card.Title style={{ color: "#fff" }}>
-                      {metadata?.name}
-                    </Card.Title>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
+          </Col>
+          <Col lg="1"></Col>
+          <Col xs="12" md="12" lg="1">
+            {view === "nft-grid" && (
+              <Button
+                size="md"
+                variant="danger"
+                onClick={() => {
+                  setView("collection");
+                }}
+              >
+                Close
+              </Button>
+            )}
+          </Col>
         </Row>
-      }
 
-      {show && (
-        <AlertDismissible title={title} message={message} setShow={setShow} />
-      )}
+        {loading ? (
+          <div className="loading">
+            <PreLoader variant={variant} />
+          </div>
+        ) : view === "collection" ? (
+          <Collections
+            groupedNfts={groupedNfts}
+            setNfts={setNfts}
+            variant={variant}
+            setView={setView}
+          />
+        ) : (
+          <GalleryView nfts={nfts} />
+        )}
+        {show && (
+          <AlertDismissible title={title} message={message} setShow={setShow} />
+        )}
+      </div>
     </div>
   );
 }

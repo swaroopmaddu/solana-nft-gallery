@@ -54,13 +54,18 @@
   float: left;
 }
 .imageGrid:hover {
-  border: 2px solid #777;
+  background-color: #61dafb;
+  z-index: 12;
+  transform: scale(1.1);
+  aspect-ratio: 1 / 1;
+  transition: all .3s ease;
 }
 
 .imageGrid img {
   width: 100%;
-  object-fit: cover;
   height: 300px;
+  object-fit: cover;
+  overflow: hidden;
 }
 .imageGrid span {
   display: block;
